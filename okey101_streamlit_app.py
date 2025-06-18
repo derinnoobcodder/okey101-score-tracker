@@ -2,9 +2,25 @@ import streamlit as st
 
 st.set_page_config(page_title="Okey 101 Skor Takibi", layout="centered")
 
-# Takım adlarını alma
-t1 = st.text_input("Takım 1 Adı", value="Takım 1", key="t1")
-t2 = st.text_input("Takım 2 Adı", value="Takım 2", key="t2")
+# Takım adlarını ve oyun sayısını alma
+if "t1" not in st.session_state:
+    st.session_state.t1 = st.text_input("Takım 1 Adı", value="Takım A")
+else:
+    st.text_input("Takım 1 Adı", value=st.session_state.t1, key="t1_display", disabled=True)
+
+if "t2" not in st.session_state:
+    st.session_state.t2 = st.text_input("Takım 2 Adı", value="Takım B")
+else:
+    st.text_input("Takım 2 Adı", value=st.session_state.t2, key="t2_display", disabled=True)
+
+if "max_rounds" not in st.session_state:
+    st.session_state.max_rounds = st.number_input("Kaç oyun oynanacak?", min_value=1, max_value=50, value=13)
+else:
+    st.number_input("Kaç oyun oynanacak?", min_value=1, max_value=50, value=st.session_state.max_rounds, disabled=True)
+
+# Takım isimleri
+t1 = st.session_state.t1
+t2 = st.session_state.t2
 
 # Skorları session_state'te tut
 if "scores" not in st.session_state:
