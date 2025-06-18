@@ -24,8 +24,8 @@ t2 = st.session_state.t2
 
 st.title("🀄 Okey 101 Skor Takibi")
 st.subheader(f"🎯 Tur: {st.session_state.round} / {st.session_state.max_rounds}")
-st.write(f"**{t1}:** {st.session_state.scores[t1]} puan")
-st.write(f"**{t2}:** {st.session_state.scores[t2]} puan")
+st.markdown(f"### 🔴 {t1}: {st.session_state.scores[t1]} puan")
+st.markdown(f"### 🔵 {t2}: {st.session_state.scores[t2]} puan")
 st.markdown("---")
 
 # Hızlı ceza
@@ -81,6 +81,22 @@ if st.button("✅ Turu Bitir"):
     st.session_state.round += 1
     st.session_state.scores[t1] = 0
     st.session_state.scores[t2] = 0
+    if st.session_state.round > st.session_state.max_rounds:
+        toplam1 = sum([x[1] for x in st.session_state.history])
+        toplam2 = sum([x[2] for x in st.session_state.history])
+        if toplam1 < toplam2:
+            kazanan = t1
+        elif toplam2 < toplam1:
+            kazanan = t2
+        else:
+            kazanan = None
+
+        st.success("🏁 Oyun Bitti!")
+        if kazanan:
+            st.balloons()
+            st.markdown(f"## 🏆 Kazanan Takım: **{kazanan}**")
+        else:
+            st.markdown("## 🤝 Beraberlik!")
     st.rerun()
 
 # Skorları sıfırla
