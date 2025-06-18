@@ -15,6 +15,7 @@ if "giris_yapildi" not in st.session_state:
         st.session_state.scores = {st.session_state.t1: 0, st.session_state.t2: 0}
         st.session_state.round = 1
         st.session_state.history = []
+        st.session_state.kazanan = ""
         st.rerun()
     st.stop()
 
@@ -85,29 +86,35 @@ if st.button("✅ Turu Bitir"):
         toplam1 = sum([x[1] for x in st.session_state.history])
         toplam2 = sum([x[2] for x in st.session_state.history])
         if toplam1 < toplam2:
-            kazanan = t1
+            st.session_state.kazanan = t1
         elif toplam2 < toplam1:
-            kazanan = t2
+            st.session_state.kazanan = t2
         else:
-            kazanan = None
+            st.session_state.kazanan = None
+        st.rerun()
 
-        st.success("🏁 Oyun Bitti!")
-        if kazanan:
-            st.balloons()
-            st.markdown(f"## 🏆 Kazanan Takım: **{kazanan}**")
-        else:
-            st.markdown("## 🤝 Beraberlik!")
-    st.rerun()
+# Kazanan varsa göster
+if st.session_state.round > st.session_state.max_rounds:
+    st.success("🏁 Oyun Bitti!")
+    if st.session_state.kazanan:
+        st.balloons()
+        st.markdown(f"## 🏆 Kazanan Takım: **{st.session_state.kazanan}**")
+    else:
+        st.markdown("## 🤝 Beraberlik!")
 
 # Skorları sıfırla
 if st.button("🧹 Skorları Sıfırla"):
     st.session_state.scores = {t1: 0, t2: 0}
     st.rerun()
 
-# Geçmiş tablo
+# Geçmiş tablo + toplam
 if st.button("📋 Geçmişi Göster"):
     if st.session_state.history:
         st.subheader("🕓 Oyun Geçmişi")
-        st.table([{ "Tur": tur, t1: s1, t2: s2 } for tur, s1, s2 in st.session_state.history])
+        data = [{"Tur": tur, t1: s1, t2: s2} for tur, s1, s2 in st.session_state.history]
+        toplam1 = sum([x[1] for x in st.session_state.history])
+        toplam2 = sum([x[2] for x in st.session_state.history])
+        data.append({"Tur": "Toplam", t1: toplam1, t2: toplam2})
+        st.table(data)
     else:
         st.info("Henüz tur oynanmadı.")
